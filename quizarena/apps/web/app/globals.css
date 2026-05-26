@@ -1,0 +1,311 @@
+@import "tailwindcss";
+
+/* ===== QuizArena Retro Terminal Theme (Tailwind v4) ===== */
+@theme {
+  /* --- Colors --- */
+  --color-bg-primary: #050508;
+  --color-bg-secondary: #0c0c12;
+  --color-bg-card: #0d0d14;
+  --color-bg-card-hover: #12121c;
+  --color-bg-input: #08080c;
+
+  /* Phosphor Retro Colors */
+  --color-accent-green: #00ff66;       /* Phosphor Green (Main) */
+  --color-accent-green-dim: #008833;   /* Dimmed Green */
+  --color-accent-amber: #ffb000;       /* Retro Amber (Alert/Host) */
+  --color-accent-cyan: #00f0ff;        /* Terminal Cyan */
+  --color-accent-red: #ff2255;         /* Terminal Red */
+
+  --color-text-primary: #f0f0f0;
+  --color-text-secondary: #00ff66;     /* Green text is system primary */
+  --color-text-muted: #666677;
+
+  --color-border-default: #1a1a26;
+  --color-border-green: #00ff66;
+  --color-border-amber: #ffb000;
+
+  /* --- Fonts --- */
+  --font-display: "VT323", monospace;
+  --font-body: "Share Tech Mono", monospace;
+
+  /* --- Shadows --- */
+  --shadow-block-green: 4px 4px 0px 0px #00ff66;
+  --shadow-block-amber: 4px 4px 0px 0px #ffb000;
+  --shadow-block-cyan: 4px 4px 0px 0px #00f0ff;
+  --shadow-block-default: 4px 4px 0px 0px #1a1a26;
+
+  /* --- Animations --- */
+  --animate-blink: blink 1s step-end infinite;
+  --animate-crt-flicker: crt-flicker 0.15s infinite;
+  --animate-slide-up: terminal-slide 0.3s ease-out;
+}
+
+/* ===== Custom Keyframes ===== */
+@keyframes blink {
+  from, to { border-color: transparent; }
+  50% { border-color: currentColor; }
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.99; }
+  50% { opacity: 1; }
+  100% { opacity: 0.99; }
+}
+
+@keyframes terminal-slide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Base Styles ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
+  -webkit-font-smoothing: none; /* Keep pixel fonts sharp */
+  -moz-osx-font-smoothing: unset;
+  overflow-x: hidden;
+}
+
+/* ===== Scrollbar Retro ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-left: 1px solid var(--color-border-default);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-green-dim);
+  border: 1px solid var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-green);
+}
+
+/* ===== CRT & Scanline Effects ===== */
+.crt-effect {
+  position: relative;
+  animation: crt-flicker 0.25s infinite;
+}
+
+.crt-effect::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 9999;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+.crt-vignette {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* ===== Utility / Terminal Classes ===== */
+.bg-terminal-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 102, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.01) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.terminal-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-default);
+  border-radius: 4px;
+  box-shadow: var(--shadow-block-default);
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.terminal-card:hover {
+  border-color: var(--color-accent-green);
+  box-shadow: var(--shadow-block-green);
+}
+
+.terminal-card-amber {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-default);
+  border-radius: 4px;
+  box-shadow: var(--shadow-block-default);
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.terminal-card-amber:hover {
+  border-color: var(--color-accent-amber);
+  box-shadow: var(--shadow-block-amber);
+}
+
+/* Clean, crisp text gradients (terminal green/white instead of cyan/magenta) */
+.text-terminal-green {
+  color: var(--color-accent-green);
+  text-shadow: 0 0 4px rgba(0, 255, 102, 0.3);
+}
+
+.text-terminal-amber {
+  color: var(--color-accent-amber);
+  text-shadow: 0 0 4px rgba(255, 176, 0, 0.3);
+}
+
+/* Pixel Titles */
+.terminal-title {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+/* Retro Buttons with Hard Drop Shadow */
+.btn-terminal-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--color-bg-primary);
+  background: var(--color-accent-green);
+  border: 2px solid var(--color-accent-green);
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: var(--shadow-block-green);
+  transition: all 0.15s ease;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn-terminal-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #00ff66;
+}
+
+.btn-terminal-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #00ff66;
+}
+
+.btn-terminal-primary:disabled {
+  background: var(--color-bg-card);
+  border-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-terminal-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--color-accent-green);
+  background: transparent;
+  border: 2px solid var(--color-accent-green);
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: var(--shadow-block-default);
+  transition: all 0.15s ease;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn-terminal-secondary:hover {
+  background: rgba(0, 255, 102, 0.08);
+  border-color: var(--color-accent-green);
+  box-shadow: var(--shadow-block-green);
+  transform: translate(-2px, -2px);
+}
+
+.btn-terminal-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #00ff66;
+}
+
+.btn-terminal-amber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  background: transparent;
+  border: 2px solid var(--color-accent-amber);
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: var(--shadow-block-default);
+  transition: all 0.15s ease;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn-terminal-amber:hover {
+  background: rgba(255, 176, 0, 0.08);
+  border-color: var(--color-accent-amber);
+  box-shadow: var(--shadow-block-amber);
+  transform: translate(-2px, -2px);
+}
+
+.btn-terminal-amber:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #ffb000;
+}
+
+/* Terminal Inputs */
+.input-terminal {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-accent-green);
+  background: var(--color-bg-input);
+  border: 2px solid var(--color-border-default);
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.15s ease;
+  min-height: 44px;
+}
+
+.input-terminal:focus {
+  border-color: var(--color-accent-green);
+  box-shadow: 0px 0px 0px 2px rgba(0, 255, 102, 0.15);
+}
+
+.input-terminal::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Command Prompt Blink Cursor */
+.terminal-prompt::after {
+  content: "_";
+  animation: blink 0.8s step-end infinite;
+  color: inherit;
+}
